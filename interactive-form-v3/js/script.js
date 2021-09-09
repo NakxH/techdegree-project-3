@@ -50,4 +50,17 @@ tShirtDesign.addEventListener('change', (e) => {
   
 });
 
+const activeField = document.querySelector('#activities')
 
+activeField.addEventListener('change', (e) => {
+
+  const checkbox = activeField.getElementsByTagName('input');
+
+  if ( checkbox ) {
+
+    console.log('hello');
+
+  }
+
+
+})
