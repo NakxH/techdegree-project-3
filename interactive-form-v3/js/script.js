@@ -1,3 +1,5 @@
+// Job Selection
+
 const nameInput = document.querySelector('#name');
 nameInput.focus();
 
@@ -20,6 +22,8 @@ jobRoleInput.addEventListener('change', () => {
   }
 
 });
+
+// Shirt Colors
 
 const colorSelectElement = document.querySelector('#shirt-colors');
 colorSelectElement.style.display = 'none';
@@ -46,21 +50,68 @@ tShirtDesign.addEventListener('change', (e) => {
     }
   }
 
-  colorSelectElement.style.display = 'block';
+colorSelectElement.style.display = 'block';
   
 });
 
-const activeField = document.querySelector('#activities')
+// Activities
 
-activeField.addEventListener('change', (e) => {
+const activeField = document.querySelector('#activities');
+let  totalCost = 0;
 
-  const checkbox = activeField.getElementsByTagName('input');
+  activeField.addEventListener('change', (e) => {
 
-  if ( checkbox ) {
+  let cost = e.target.getAttribute('data-cost');
 
-    console.log('hello');
+  if ( e.target.checked ) {
+
+    totalCost += parseInt(cost);
+
+  } else {
+
+    totalCost -= parseInt(cost);
 
   }
 
+  console.log(totalCost);
 
+  const activitiesCost = document.querySelector('#activities-cost');
+  
+  activitiesCost.textContent = `Total: $${totalCost}`;
+
+})
+
+
+// Payment Method
+
+const paymentMethod = document.querySelector('#payment');
+const creditCard = document.querySelector('#credit-card');
+const paypal = document.querySelector('#paypal');
+const bitcoin = document.querySelector('#bitcoin');
+
+creditCard.style.display = 'none';
+  paypal.style.display = 'none';
+  bitcoin.style.display = 'none';
+
+paymentMethod.addEventListener('change', (e) => {
+
+  if ( paymentMethod.value === 'credit-card' ) {
+
+    creditCard.style.display = 'block';
+    paypal.style.display = 'none';
+    bitcoin.style.display = 'none';
+
+  } else if ( paymentMethod.value === 'paypal' ) {
+
+    creditCard.style.display = 'none';
+    paypal.style.display = 'block';
+    bitcoin.style.display = 'none';
+
+  } else {
+
+    creditCard.style.display = 'none';
+    paypal.style.display = 'none';
+    bitcoin.style.display = 'block';
+
+  }
 })
