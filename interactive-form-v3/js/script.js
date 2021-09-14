@@ -1,120 +1,127 @@
-// Job Selection
+// Focus on first input element function
 
-const nameInput = document.querySelector('#name');
-nameInput.focus();
+function focusFirstInput() {
+  const nameInput = document.querySelector('#name');
+  nameInput.focus();
+}
 
-const jobRoleInput = document.querySelector('#title');
+focusFirstInput();
 
-const otherJobRole = document.querySelector('#other-job-role');
-otherJobRole.style.display = 'none';
+// Job Selection function
 
+function jobRoleDefault() {
 
-jobRoleInput.addEventListener('change', () => {
+  const jobRoleInput = document.querySelector('#title');
 
-  if ( jobRoleInput.value === 'other' ) {
+  const otherJobRole = document.querySelector('#other-job-role');
+  otherJobRole.style.display = 'none';
 
-    otherJobRole.style.display = 'block';
+  jobRoleInput.addEventListener('change', () => {
 
-  } else {
-
-    otherJobRole.style.display = 'none';
-
-  }
-
-});
-
-// Shirt Colors
-
-const colorSelectElement = document.querySelector('#shirt-colors');
-colorSelectElement.style.display = 'none';
-
-const tShirtDesign = document.querySelector('#design');
-const colorSelect = document.querySelector('#color');
-
-tShirtDesign.addEventListener('change', (e) => {
-
-  colorSelect.value = '';
-
-  const colors = colorSelect.querySelectorAll('option')
-
-  for ( let i = 0; i < colors.length; i++ ) {
-
-    if ( colors[i].getAttribute('data-theme') !== e.target.value ) {
-
-      colors[i].style.display = 'none';
-
+    if ( jobRoleInput.value === 'other' ) {
+      otherJobRole.style.display = 'block';
     } else {
-
-      colors[i].style.display = 'block';
-
+      otherJobRole.style.display = 'none';
     }
-  }
 
-colorSelectElement.style.display = 'block';
+  });
+}
+
+jobRoleDefault();
+
+// Shirt design and color function
+
+function shirtColorDesign() {
+
+  const colorSelectElement = document.querySelector('#shirt-colors');
+  colorSelectElement.style.display = 'none';
   
-});
+  const tShirtDesign = document.querySelector('#design');
+  const colorSelect = document.querySelector('#color');
+  
+  tShirtDesign.addEventListener('change', (e) => {
+  
+    colorSelect.value = '';
+  
+    const colors = colorSelect.querySelectorAll('option')
+  
+    for ( let i = 0; i < colors.length; i++ ) {
+  
+      if ( colors[i].getAttribute('data-theme') !== e.target.value ) {
+        colors[i].style.display = 'none';
+      } else {
+        colors[i].style.display = 'block';
+      }
+    }
+  
+  colorSelectElement.style.display = 'block';
+  
+  });
+}
 
-// Activities
+shirtColorDesign();
 
+// Activities function
 const activeField = document.querySelector('#activities');
-let  totalCost = 0;
 
-activeField.addEventListener('change', (e) => {
+function activities() {
 
-  let cost = e.target.getAttribute('data-cost');
-
-  if ( e.target.checked ) {
-
-    totalCost += parseInt(cost);
-
-  } else {
-
-    totalCost -= parseInt(cost);
-
-  }
-
-  console.log(totalCost);
-
-  const activitiesCost = document.querySelector('#activities-cost');
   
-  activitiesCost.textContent = `Total: $${totalCost}`;
+  let  totalCost = 0;
+  
+  activeField.addEventListener('change', (e) => {
+  
+    let cost = e.target.getAttribute('data-cost');
+  
+    if ( e.target.checked ) {
+      totalCost += parseInt(cost);
+    } else {
+      totalCost -= parseInt(cost);
+    }
+  
+    const activitiesCost = document.querySelector('#activities-cost');
+    
+    activitiesCost.textContent = `Total: $${totalCost}`;
+  
+  })
+}
 
-})
-
+activities();
 
 // Payment Method
 
-const paymentMethod = document.querySelector('#payment');
+function paymentMethods() {
 
-displayPaymentSection(paymentMethod.value);
+  const paymentMethod = document.querySelector('#payment');
 
-paymentMethod.addEventListener('change', (e) => {
-  displayPaymentSection(e.target.value);
-})
-
-function displayPaymentSection(method) {
-  const creditCard = document.querySelector('#credit-card');
-  const paypal = document.querySelector('#paypal');
-  const bitcoin = document.querySelector('#bitcoin');
-
-  creditCard.style.display = 'none';
-  paypal.style.display = 'none';
-  bitcoin.style.display = 'none';
-
-  if ( method === 'credit-card' ) {
-
-    creditCard.style.display = 'block';
-
-  } else if ( method === 'paypal' ) {
-
-    paypal.style.display = 'block';
-
-  } else if ( method === 'bitcoin' ) {
-
-    bitcoin.style.display = 'block';
-
+  displayPaymentSection(paymentMethod.value);
+  
+  paymentMethod.addEventListener('change', (e) => {
+    displayPaymentSection(e.target.value);
+  })
+  
+  function displayPaymentSection(method) {
+    const creditCard = document.querySelector('#credit-card');
+    const paypal = document.querySelector('#paypal');
+    const bitcoin = document.querySelector('#bitcoin');
+  
+    creditCard.style.display = 'none';
+    paypal.style.display = 'none';
+    bitcoin.style.display = 'none';
+  
+    if ( method === 'credit-card' ) {
+      creditCard.style.display = 'block';
+    } else if ( method === 'paypal' ) {
+      paypal.style.display = 'block';
+    } else if ( method === 'bitcoin' ) {
+      bitcoin.style.display = 'block';
+    }
   }
 }
+
+paymentMethods();
+
+// Form validation using an object
 
 const form = document.querySelector('form');
 let errors = {};
@@ -191,3 +198,11 @@ form.addEventListener('formdata', (e) => {
 
   // }
 });
+
+
+
+activeField.addEventListener('focus', 'blur', (e) => {
+
+  
+
+})
