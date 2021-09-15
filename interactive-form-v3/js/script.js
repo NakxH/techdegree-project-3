@@ -1,105 +1,104 @@
-// Focus on first input element function
 
-function focusFirstInput() {
-  const nameInput = document.querySelector('#name');
-  nameInput.focus();
-}
+(function(){
+  const activitiesFieldset = document.querySelector('#activities');
 
-focusFirstInput();
+  function focusFirstInput() {
+    const nameInput = document.querySelector('#name');
+    nameInput.focus();
+  }
 
-// Job Selection function
-
-function jobRoleDefault() {
-
-  const jobRoleInput = document.querySelector('#title');
-
-  const otherJobRole = document.querySelector('#other-job-role');
-  otherJobRole.style.display = 'none';
-
-  jobRoleInput.addEventListener('change', () => {
-
-    if ( jobRoleInput.value === 'other' ) {
-      otherJobRole.style.display = 'block';
-    } else {
-      otherJobRole.style.display = 'none';
-    }
-
-  });
-}
-
-jobRoleDefault();
-
-// Shirt design and color function
-
-function shirtColorDesign() {
-
-  const colorSelectElement = document.querySelector('#shirt-colors');
-  colorSelectElement.style.display = 'none';
+  function handleJobRoleOther() {
+    const jobRoleInput = document.querySelector('#title');
   
-  const tShirtDesign = document.querySelector('#design');
-  const colorSelect = document.querySelector('#color');
+    const otherJobRole = document.querySelector('#other-job-role');
+    otherJobRole.style.display = 'none';
   
-  tShirtDesign.addEventListener('change', (e) => {
-  
-    colorSelect.value = '';
-  
-    const colors = colorSelect.querySelectorAll('option')
-  
-    for ( let i = 0; i < colors.length; i++ ) {
-  
-      if ( colors[i].getAttribute('data-theme') !== e.target.value ) {
-        colors[i].style.display = 'none';
+    jobRoleInput.addEventListener('change', () => {
+      if ( jobRoleInput.value === 'other' ) {
+        otherJobRole.style.display = 'block';
       } else {
-        colors[i].style.display = 'block';
+        otherJobRole.style.display = 'none';
+      }
+    });
+  }
+
+  function handleShirtColor() {
+    const colorSelectElement = document.querySelector('#shirt-colors');
+    colorSelectElement.style.display = 'none';
+    
+    const tShirtDesign = document.querySelector('#design');
+    const colorSelect = document.querySelector('#color');
+    
+    tShirtDesign.addEventListener('change', (e) => {
+      colorSelect.value = '';
+    
+      const colors = colorSelect.querySelectorAll('option')
+    
+      for ( let i = 0; i < colors.length; i++ ) {
+        if ( colors[i].getAttribute('data-theme') !== e.target.value ) {
+          colors[i].style.display = 'none';
+        } else {
+          colors[i].style.display = 'block';
+        }
+      }
+
+      colorSelectElement.style.display = 'block';
+    });
+  }
+  
+  function handleActivityPrice() {
+    let totalCost = 0;
+    
+    // Here I have used the focusin/focusout events as they bubble up and this means I dont have to loop through all the checkboxes and add 2 event listeners to each one.
+    activitiesFieldset.addEventListener('focusin', (e) => handleFocus(e, 'focus'));
+    activitiesFieldset.addEventListener('focusout', (e) => handleFocus(e, 'blur'));
+
+    function handleFocus(e, type) {
+      const focusElement = document.querySelector('.focus');
+      if ( focusElement ) {
+        focusElement.classList.remove('focus');
+      }
+
+      if ( type === 'focus' ) {
+        e.target.parentNode.classList.add('focus');
       }
     }
-  
-  colorSelectElement.style.display = 'block';
-  
-  });
-}
 
-shirtColorDesign();
+    activitiesFieldset.addEventListener('change', (e) => {
+      let cost = e.target.getAttribute('data-cost');
+      let time = e.target.getAttribute('data-day-and-time');
+      const matchingTimes = document.querySelectorAll(`[data-day-and-time="${time}"]`);
 
-// Activities function
-const activeField = document.querySelector('#activities');
+      for (let i = 0; i < matchingTimes.length; i++) {
+        if (matchingTimes[i] !== e.target && e.target.checked) {
+          matchingTimes[i].setAttribute('disabled', 'true');
+        } else if (matchingTimes[i] !== e.target && !e.target.checked) {
+          matchingTimes[i].removeAttribute('disabled');
+        }
+      }
 
-function activities() {
-
-  
-  let  totalCost = 0;
-  
-  activeField.addEventListener('change', (e) => {
-  
-    let cost = e.target.getAttribute('data-cost');
-  
-    if ( e.target.checked ) {
-      totalCost += parseInt(cost);
-    } else {
-      totalCost -= parseInt(cost);
-    }
-  
-    const activitiesCost = document.querySelector('#activities-cost');
+      if ( e.target.checked ) {
+        totalCost += parseInt(cost);
+      } else {
+        totalCost -= parseInt(cost);
+      }
     
-    activitiesCost.textContent = `Total: $${totalCost}`;
-  
-  })
-}
+      const activitiesCost = document.querySelector('#activities-cost');
+      
+      activitiesCost.textContent = `Total: $${totalCost}`;
+    })
+  }
 
-activities();
+  function handlePaymentMethods() {
+    const paymentMethod = document.querySelector('#payment');
+    paymentMethod.value = 'credit-card';
+    displayPaymentSection(paymentMethod.value);
+    
+    paymentMethod.addEventListener('change', (e) => {
+      displayPaymentSection(e.target.value);
+    })
+  }
 
-// Payment Method
-
-function paymentMethods() {
-
-  const paymentMethod = document.querySelector('#payment');
-
-  displayPaymentSection(paymentMethod.value);
-  
-  paymentMethod.addEventListener('change', (e) => {
-    displayPaymentSection(e.target.value);
-  })
-  
   function displayPaymentSection(method) {
     const creditCard = document.querySelector('#credit-card');
     const paypal = document.querySelector('#paypal');
@@ -117,92 +116,141 @@ function paymentMethods() {
       bitcoin.style.display = 'block';
     }
   }
-}
 
-paymentMethods();
+  function handleFieldState(value, notValid, parent, message) {
+    const error = parent.querySelector('.hint');
 
-// Form validation using an object
-
-const form = document.querySelector('form');
-let errors = {};
-const rules = {
-  'user-name': (value) => {
-    if ( value.length < 1 ) {
-      return 'The "Name" field cannot be blank or empty.'
+    if (value.length < 1) {
+      error.style.display = 'block';
+      parent.classList.add('not-valid');
+      parent.classList.remove('valid');
+      parent.querySelector('.hint').textContent = 'This field is required';
+      return 'This field is required';
     }
-    return null;
-  },
-  'user-email': (value) => {
-    const regex = /^[a-zA-z0-9]+\@[a-zA-z0-9]+\.com$/g;
-    if ( !regex.test(value) ) {
-      return 'The "Email Address" field must contain a validly formatted email address.'
+
+    if ( notValid ) {
+      error.style.display = 'block';
+      parent.classList.add('not-valid');
+      parent.classList.remove('valid');
+      parent.querySelector('.hint').textContent = message;
+      return message;
     }
+    
+    error.style.display = 'none';
+    parent.classList.remove('not-valid');
+    parent.classList.add('valid');
+    
     return null;
   }
-};
 
-// https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event
 
-form.addEventListener('submit', (e) => {
+  function validateUserName() {
+    const input = document.querySelector('#name');
+    const notValid = input.value.length < 1;
 
-  e.preventDefault();
-  // Construct a FormData object, which fires the formdata event.
-  new FormData(e.target);
+    return handleFieldState(input.value, notValid, input.parentNode, 'Name field cannot be blank');
+  }
+  
+  function validateUserEmail() {
+    const input = document.querySelector('#email');
+    const regex = /^[a-zA-z0-9]+\@[a-zA-z0-9]+\.com$/g;
+    const notValid = !regex.test(input.value);
 
-})
+    return handleFieldState(input.value, notValid, input.parentNode, 'Email address must be formatted correctly')
+  }
 
-form.addEventListener('formdata', (e) => {
-  errors = {};
-  // Get the form data from the event object.
-  let data = e.formData;
-  for (var key of data.keys()) {
-    const rule = rules[key];
-    if ( rule ) {
-      const response = rule(data.get(key));
-      if (response) {
-        errors[key] = response;
+  function validateActivities() {
+    const activities = activitiesFieldset.getElementsByTagName('input');
+    let activityCount = 0;
+
+    for ( let i = 0; i < activities.length; i++ ) {
+      if ( activities[i].checked ) {
+        activityCount++;
       }
     }
+
+    const notValid = activityCount < 1;
+
+    return handleFieldState(activityCount > 0 ? 'has activities' : '', notValid, activitiesFieldset, 'Choose at least one activity');
   }
 
-  const activities = activeField.getElementsByTagName('input');
-  let activityCount = 0;
-  for ( let i = 0; i < activities.length; i++ ) {
-    if ( activities[i].checked ) activityCount++;
-  }
-  if ( activityCount < 1 ) {
-    errors['activities'] = 'The "Register for Activities" section must have at least one activity selected.'
+  function validateCreditCard() {
+    const input = document.querySelector('#payment');
+    const errors = {};
+    if ( input.value === 'credit-card' ) {
+      errors.creditCardNumber = validateCreditCardNumber();
+      errors.creditCardZipCode = validateCreditCardZipCode();
+      errors.creditCardCvv = validateCreditCardCvv();
+    }
+    return errors;
   }
 
-  if ( data.get('user-payment') === 'credit-card' ) {
+  function validateCreditCardNumber() {
+    const input = document.querySelector('#cc-num');
     const cardNumRegex = /^[0-9]{13,16}$/g
-    if ( !cardNumRegex.test(data.get('user-cc-num')) ) {
-      errors['user-cc-num'] = 'The "Card number" field must contain a 13 - 16 digit credit card number with no dashes or spaces.';
-    }
-    const zipCodeRegex = /^[0-9]{5}$/g
-    if ( !zipCodeRegex.test(data.get('user-zip')) ) {
-      errors['user-zip'] ='The "Zip code" field must contain a 5 digit number.';
-    }
-    const cvvRegex = /^[0-9]{3}$/g
-    if ( !cvvRegex.test(data.get('user-cvv')) ) {
-      errors['user-cvv'] ='The "CVV" field must contain a 3 digit number.';
-    }
+    const notValid = !cardNumRegex.test(input.value);
+
+    return handleFieldState(input.value, notValid, input.parentNode, 'Credit card number must be between 13 - 16 digits');
   }
 
-  console.log(errors);
-  console.log(Object.keys(errors).length);
-  
-  // if ( Object.keys(errors).length > 0 ) {
+  function validateCreditCardZipCode() {
+    const input = document.querySelector('#zip');
+    const zipCodeRegex = /^[0-9]{5}$/g
+    const notValid = !zipCodeRegex.test(input.value);
 
-  //   e.preventDefault();
+    return handleFieldState(input.value, notValid, input.parentNode, 'Zip Code must be 5 digits');
+  }
 
-  // }
-});
+  function validateCreditCardCvv() {
+    const input = document.querySelector('#cvv')
+    const cvvRegex = /^[0-9]{3}$/g
+    const notValid = !cvvRegex.test(input.value);
 
+    return handleFieldState(input.value, notValid, input.parentNode, 'CVV must be 3 digits');
+  }
 
+  function handleFormSubmission() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+      let errors = {};
+      errors.userName = validateUserName();
+      errors.userEmail = validateUserEmail();
+      errors.activities = validateActivities();
+      errors = {...errors, ...validateCreditCard()};
+      for ( let key in errors ) {
+        if ( errors[key] !== null ) {
+          e.preventDefault();
+        }
+      }
+    })
+  }
 
-activeField.addEventListener('focus', 'blur', (e) => {
+  function handleRealTimeMessage() {
+    const userName = document.querySelector('#name');
+    userName.addEventListener('keyup', () => validateUserName());
 
-  
+    const email = document.querySelector('#email');
+    email.addEventListener('keyup', () => validateUserEmail());
 
-})
+    const creditCardNumber = document.querySelector('#cc-num');
+    creditCardNumber.addEventListener('keyup', () => validateCreditCardNumber());
+
+    const creditCardZipCode = document.querySelector('#zip');
+    creditCardZipCode.addEventListener('keyup', () => validateCreditCardZipCode());
+
+    const creditCardCvv = document.querySelector('#cvv');
+    creditCardCvv.addEventListener('keyup', () => validateCreditCardCvv());
+
+    // Checkboxes act differently to regular inputs, I have used the change event to capture keyboard and mouse input.
+    activitiesFieldset.addEventListener('change', () => validateActivities());
+  }
+
+  focusFirstInput();
+  handleJobRoleOther();
+  handleShirtColor();
+  handleActivityPrice();
+  handlePaymentMethods();
+  handleFormSubmission();
+  handleRealTimeMessage();
+
+})()
