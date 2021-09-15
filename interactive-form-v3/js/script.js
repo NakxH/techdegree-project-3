@@ -220,6 +220,7 @@
       for ( let key in errors ) {
         if ( errors[key] !== null ) {
           e.preventDefault();
+          window.scrollTo(0,0);
         }
       }
     })
