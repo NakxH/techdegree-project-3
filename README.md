@@ -12,4 +12,4 @@ I have added conditional error messages that display a different error message t
 
 ## How to run this project
 - Clone the repository
-- Open the index.html file in Goodle Chrome
+- Open the index.html file in Google Chrome
